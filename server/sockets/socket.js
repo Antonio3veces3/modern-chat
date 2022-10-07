@@ -7,7 +7,7 @@ const users = new Users();
 io.on('connection', (client) => {
     console.log('Usuario conectado');
     
-    client.on('enterChat', async(user, callback)=>{
+    client.on('enterChat', (user, callback)=>{
         if(!user.name || !user.room){
             return callback({
                 error: true,
@@ -16,21 +16,23 @@ io.on('connection', (client) => {
         }
 
         client.join(user.room);
+
         users.addPerson(client.id, user.name, user.room);
         client.broadcast.to(user.room).emit('personList', users.getPersonByRoom(user.room));
-        
-        callback(users.getPersonByRoom(user.room));
+        client.broadcast.to(user.room).emit('createMessage',createMessage('Admin', `${user.name} connected`));
+
+        callback(users.getPersonByRoom(user.room),user.room);
     });
 
-    client.on('createMessage', (data)=>{
+    client.on('createMessage', (data, callback )=>{
         let person = users.getPerson(client.id);
         let message = createMessage(person.name, data.message);
         client.broadcast.to(person.room).emit('createMessage', message);
+        callback(message);
     })
 
     client.on('disconnect', async() => {
-        let person = await users.removePerson(client.id);
-        console.log('Person: ', person);
+        let person =  users.removePerson(client.id);
 
         client.broadcast.to(person.room).emit('createMessage',createMessage('Admin', `${person.name} disconnected`));
         

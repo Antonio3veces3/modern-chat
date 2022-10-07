@@ -1,22 +1,23 @@
 var socket = io();
 
 let params = new URLSearchParams( window.location.search);
-if(!params.has('name') || !params.has('room')){
+if(!params.has('nombre') || !params.has('sala')){
     window.location = 'index.html';
     throw new Error('The name and room on param is required');
 }
 
 
 let user = {
-    name: params.get('name'),
-    room: params.get('room')
+    name: params.get('nombre'),
+    room: params.get('sala')
 }
 
 socket.on('connect', function() {
     console.log('Conectado al servidor');
 
-    socket.emit('enterChat', user, function(res){
-        console.log(res);
+    socket.emit('enterChat', user, function(res, room){
+        renderizarUsers(res);
+        renderNameRoom(room)
     });
 });
 
@@ -31,12 +32,11 @@ socket.on('reconnect',()=>{
 
 // Escuchar información
 socket.on('createMessage', function(mensaje) {
-
-    console.log('Servidor:', mensaje);
-
+    renderMessages(mensaje, false);
+    scrollBottom();
 });
 socket.on('personList', function(userList) {
-    console.log(userList);
+    renderizarUsers(userList);
 });
 
 socket.on('privateMessage', function(message){

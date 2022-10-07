@@ -26,7 +26,7 @@ class Users {
         let deletedUser = this.getPerson(id);
         this.persons=  this.persons.filter( person => 
             {
-                person.id != id //crea un nuevo Array con las personas que tengan un ID diferente al recibido
+                return person.id != id //crea un nuevo Array con las personas que tengan un ID diferente al recibido
             }
         )
         return deletedUser;
