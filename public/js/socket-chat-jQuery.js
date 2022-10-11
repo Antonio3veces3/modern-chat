@@ -10,6 +10,7 @@ let divChatbox = $('#divChatbox');
 let nameRoom = $('#titleRoom');
 let inputSearching = $('#searching');
 
+let mainRoom = paramsJQuery.get('sala');
 //Renderizar nombre de la sala
 function renderNameRoom(name){
   let title;
@@ -108,6 +109,9 @@ divUsuarios.on('click', 'a', function(){
     nameRoom.text(name)
     return;
   }
+  socket.emit('getPersonList', mainRoom, function(list){
+    renderizarUsers(list)
+  })
   nameRoom.text(paramsJQuery.get('sala'));
 })
 
@@ -137,7 +141,11 @@ inputSearching.on('input', ()=>{
 
 inputSearching.change(()=>{
   const value= $('#searching').val();
-  socket.emit('searching', value, function(searchingList){
+  const data = {
+    value,
+    room: mainRoom
+  }
+  socket.emit('searching', data, function(searchingList){
     renderizarUsers(searchingList);
   });
 

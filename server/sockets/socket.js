@@ -46,11 +46,13 @@ io.on('connection', (client) => {
     })
 
     client.on('searching', (data, callback)=>{
-        
         const result = users.getSearchingPersons(data);
         callback(result)
     })
 
+    client.on('getPersonList', (room, callback)=>{
+        callback(users.getPersonByRoom(room));
+    })
 
 
     

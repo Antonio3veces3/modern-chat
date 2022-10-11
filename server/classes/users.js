@@ -39,7 +39,9 @@ class Users {
 
     getSearchingPersons(search){
         let searchedList = this.persons.filter( person => {
-            return person.name.includes(search)
+            let personLowerCase = (person.name).toLowerCase();
+            let personSearch = (search.value).toLowerCase();
+            if(personLowerCase.includes(personSearch) && person.room === search.room ) return person
         })
 
         return searchedList;
