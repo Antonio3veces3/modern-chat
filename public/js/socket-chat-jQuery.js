@@ -8,17 +8,18 @@ let formEnviar = $('#formEnviar');
 let txtMsg = $('#txtMsg');
 let divChatbox = $('#divChatbox');
 let nameRoom = $('#titleRoom');
+let inputSearching = $('#searching');
 
 //Renderizar nombre de la sala
 function renderNameRoom(name){
-  let title = ``;
+  let title;
   if(name!=''){
-    title+=`<small>${name}</small>`
+    title = name
   }else{
-    title+=`<small>General</small>`
+    title= 'General'
   }
 
-  nameRoom.append(title)
+  nameRoom.text(title)
 };
 
 //FUNCIONES PARA RENDERIZAR USUARIOS
@@ -34,7 +35,7 @@ function renderizarUsers(persons) {
   for (let i = 0; i < persons.length; i++) {
     html += `
         <li>
-        <a data-id=${persons[i].id} href="javascript:void(0)"><img src="assets/images/users/1.jpg" alt="user-img" class="img-circle"> <span>${persons[i].name} <small class="text-success">online</small></span></a>
+        <a data-id=${persons[i].id} data-name=${persons[i].name} href="javascript:void(0)"><img src="assets/images/users/1.jpg" alt="user-img" class="img-circle"> <span>${persons[i].name} <small class="text-success">online</small></span></a>
         </li>
         `;
   }
@@ -101,14 +102,19 @@ function scrollBottom() {
 //Listeners
 divUsuarios.on('click', 'a', function(){
   let id = $(this).data('id');
+  let name = $(this).data('name');
+
   if(id){
-    console.log(id);
+    nameRoom.text(name)
+    return;
   }
+  nameRoom.text(paramsJQuery.get('sala'));
 })
+
 
 formEnviar.on('submit', (e)=>{
   e.preventDefault();
-  if(txtMsg.val().trim().length===0){
+  if(txtMsg.val().trim().length===0){ //evita enviar mensajes vacios y con espacios
     return;
   }
 
@@ -123,3 +129,21 @@ formEnviar.on('submit', (e)=>{
   })
 })
 
+/*
+Imprime cada letra escrita en el input
+inputSearching.on('input', ()=>{
+  console.log($('#searching').val());
+})*/
+
+inputSearching.change(()=>{
+  const value= $('#searching').val();
+  socket.emit('searching', value, function(searchingList){
+    renderizarUsers(searchingList);
+  });
+
+  $('#searching').val('');
+})
+
+// searching.change(function(){
+//   console.log($(this).text())
+// })

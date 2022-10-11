@@ -18,12 +18,12 @@ require('./sockets/socket');
 
 
 
+const hostname = 'localhost';
 
-
-server.listen(port, (err) => {
+server.listen(port,hostname, (err) => {
 
     if (err) throw new Error(err);
 
-    console.log(`Servidor corriendo en puerto ${ port }`);
+    console.log(`Servidor corriendo en http://${hostname}:${ port }`);
 
 });

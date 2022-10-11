@@ -36,6 +36,14 @@ class Users {
         let usersRoom = this.persons.filter( person => person.room === room);
         return usersRoom;
     }
+
+    getSearchingPersons(search){
+        let searchedList = this.persons.filter( person => {
+            return person.name.includes(search)
+        })
+
+        return searchedList;
+    }
 }
 
 module.exports = Users;

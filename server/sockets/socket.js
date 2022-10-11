@@ -45,6 +45,12 @@ io.on('connection', (client) => {
         client.broadcast.to(data.to).emit('privateMessage', createMessage(person.name, data.message));
     })
 
+    client.on('searching', (data, callback)=>{
+        
+        const result = users.getSearchingPersons(data);
+        callback(result)
+    })
+
 
 
     
